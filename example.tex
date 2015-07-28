@@ -1,0 +1,44 @@
+\documentclass{standalone}
+
+\usepackage{tikz,pgf}
+\usetikzlibrary{circuits.logic.mux}
+
+\begin{document}
+
+\begin{tikzpicture}[circuit logic]
+
+  \node[mux,inputs={nn},info={center:$m_0$}] at (3, 7) (a) {};
+
+  \node at (5, 7) (b) {B};
+ 
+  \draw[-] (a.output) -- (b);
+ 
+  \node at (0, 8) (c) {C};
+  \node at (0, 6) (d) {D};
+ 
+  \draw[-] (c) -- (a.input 1);
+  \draw[-] (d) -- (a.input 2);
+ 
+  \node at (3, 6) (e) {E};
+  \draw[-,orange] (e) -- (a.select);
+
+
+
+  \node[mux,inputs={nn},point left,info={center:$m_0$}] at (3, 0) (z) {};
+
+  \node at (0, 0) (y) {Y};
+ 
+  \draw[-] (z.output) -- (y);
+ 
+  \node at (5, -1) (x) {X};
+  \node at (5, 1) (v) {V};
+ 
+  \draw[-] (x) -- (z.input 1);
+  \draw[-] (v) -- (z.input 2);
+ 
+  \node at (3, -1) (w) {W};
+  \draw[-,orange] (w) -- (z.other select);
+
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,187 @@
+% Copyright 2008 by Mark Wibrow
+% Copyright 2015 by Gabi Sarkis
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+%
+% See the file doc/generic/pgf/licenses/LICENSE for more details.
+
+\usepgflibrary{shapes.gates.logic}
+\usepgflibrary{shapes.gates.logic.IEC}
+
+\pgfkeys{/pgf/.cd,
+	mux symbol/.initial=,
+}
+
+% Shape mux
+%
+\pgfdeclareshape{mux}{
+	\expandafter\pgfutil@g@addto@macro\csname pgf@sh@s@mux\endcsname{%
+		\pgf@lib@sh@logicgate@parseinputs{1024}% Maximum 1024 (!) inputs.
+		%
+		\pgfmathloop%
+		\ifnum\pgfmathcounter>\pgf@lib@sh@logicgate@numinputs%
+		\else%
+			\pgfutil@ifundefined{pgf@anchor@mux@input \pgfmathcounter}{%
+				\expandafter\xdef\csname pgf@anchor@mux@input \pgfmathcounter\endcsname{%
+					\noexpand\pgf@lib@sh@logicgate@IEC@inputanchor{\pgfmathcounter}%
+				}%
+			}{}%
+		\repeatpgfmathloop%
+		\ifnum\pgf@lib@sh@logicgate@numinputs<2\relax%
+			\PackageError{PGF}{A mux must have at least two inputs}{}%
+		\fi%
+	}%
+	\savedmacro\numinputs{\let\numinputs\pgf@lib@sh@logicgate@numinputs}%
+	\saveddimen\invertedradius{%
+		\pgfmathsetlength\pgf@x{\pgfkeysvalueof{/pgf/logic gate inverted radius}}%
+	}%
+	\saveddimen\outerinvertedradius{%
+		\pgfmathsetlength\pgf@x{\pgfkeysvalueof{/pgf/logic gate inverted radius}}%
+		\advance\pgf@x.5\pgflinewidth%
+	}
+	\savedmacro\dimensions{%
+		\pgf@lib@sh@logicgates@dimensions@IEC{mux}%
+	}
+	\savedanchor\centerpoint{%
+		\pgf@x.5\wd\pgfnodeparttextbox%
+		\pgf@y.5\ht\pgfnodeparttextbox%
+		\advance\pgf@y-.5\dp\pgfnodeparttextbox%
+	}
+	\savedanchor\midpoint{%
+		\pgf@x.5\wd\pgfnodeparttextbox%
+		\pgfmathsetlength\pgf@y{+0.5ex}%
+	}
+	\savedanchor\basepoint{%
+		\pgf@x.5\wd\pgfnodeparttextbox%
+		\pgf@y0pt%
+	}
+	\anchor{center}{\centerpoint}%
+	\anchor{mid}{\midpoint}
+	\anchor{mid west}{%
+		\dimensions%
+		\midpoint%
+		\advance\pgf@x-\halfwidth}%
+	\anchor{mid east}{%
+		\dimensions%
+		\midpoint%
+		\advance\pgf@x\halfwidth}%
+	\anchor{base}{\basepoint}
+	\anchor{base west}{%
+		\dimensions%
+		\basepoint%
+		\advance\pgf@x-\halfwidth}%
+	\anchor{base east}{%
+		\dimensions%
+		\basepoint%
+		\advance\pgf@x\halfwidth}%
+	\anchor{north}{%
+    \dimensions%
+    \centerpoint%
+    \advance\pgf@y by \halfheight%
+    \pgfmathmultiply{\halfwidth}{0.577}%
+    \advance\pgf@y by -\pgfmathresult pt%
+  }%
+	\anchor{south}{
+    \dimensions%
+    \centerpoint%
+    \advance\pgf@y by -\halfheight%
+    \pgfmathmultiply{\halfwidth}{0.577}%
+    \advance\pgf@y by \pgfmathresult pt%
+  }%
+	\anchor{east}{\dimensions\centerpoint\advance\pgf@x\halfwidth}%
+	\anchor{west}{\dimensions\centerpoint\advance\pgf@x-\halfwidth}%
+	\anchor{north east}{%
+    \dimensions%
+    \centerpoint%
+    \advance\pgf@y by \halfheight%
+    \pgfmathmultiply{\halfwidth}{1.155}%
+    \advance\pgf@y by -\pgfmathresult pt%
+    \advance\pgf@x by \halfwidth%
+  }%
+	\anchor{north west}{\dimensions\centerpoint\advance\pgf@x-\halfwidth\advance\pgf@y\halfheight}%
+	\anchor{south east}{%
+    \dimensions%
+    \centerpoint%
+    \advance\pgf@y by -\halfheight%
+    \pgfmathmultiply{\halfwidth}{1.155}%
+    \advance\pgf@y by \pgfmathresult pt%
+    \advance\pgf@x by \halfwidth%
+  }%
+	\anchor{south west}{\dimensions\centerpoint\advance\pgf@x-\halfwidth\advance\pgf@y-\halfheight}%
+
+	\anchor{select}{
+    \dimensions%
+    \centerpoint%
+    \advance\pgf@y by -\halfheight%
+    \pgfmathmultiply{\halfwidth}{0.577}%
+    \advance\pgf@y by \pgfmathresult pt%
+  }%
+
+	\anchor{other select}{
+    \dimensions%
+    \centerpoint%
+    \advance\pgf@y by \halfheight%
+    \pgfmathmultiply{\halfwidth}{0.577}%
+    \advance\pgf@y by -\pgfmathresult pt%
+  }%
+
+	\anchor{output}{\dimensions\centerpoint\advance\pgf@x\halfwidth} 
+
+	\anchor{output}{\dimensions\centerpoint\advance\pgf@x\halfwidth} 
+
+  \backgroundpath{%
+		\dimensions%
+		\pgf@xc\halfwidth%
+		\pgf@yc\halfheight%
+		\pgfmathaddtolength\pgf@xc{-\pgfkeysvalueof{/pgf/outer xsep}}%
+		\pgfmathaddtolength\pgf@yc{-\pgfkeysvalueof{/pgf/outer xsep}}%
+		{%
+			\pgftransformshift{\centerpoint}%
+
+      \pgfmathadd{\pgf@yc}{-1.155\pgf@xc}
+      \let\pgf@yd\pgfmathresult
+
+      \pgfpathmoveto{\pgfpoint{-\pgf@xc}{-\pgf@yc}}
+			\pgfpathlineto{\pgfpoint{-\pgf@xc}{\pgf@yc}}
+  		\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yd}}
+  		\pgfpathlineto{\pgfpoint{\pgf@xc}{-\pgf@yd}}
+      \pgfpathclose
+
+			%
+			% Draw inputs.
+			%
+			\pgf@xc-\halfwidth%
+			\advance\pgf@xc-\invertedradius%
+			\pgf@yc\halfheight%
+			\pgfutil@tempdima2.0\pgf@yc%
+			\c@pgf@counta\numinputs%
+			\advance\c@pgf@counta1\relax%
+			\divide\pgfutil@tempdima\c@pgf@counta%
+			\pgfmathloop%
+			\ifnum\pgfmathcounter>\numinputs%
+			\else%
+				\advance\pgf@yc-\pgfutil@tempdima%
+				\expandafter\ifx\expandafter\pgf@lib@sh@itext\csname input-\pgfmathcounter\endcsname%
+					{%
+						\pgfpathcircle{\pgfqpoint{\pgf@xc}{\pgf@yc}}{\invertedradius}%			
+					}%
+				\fi%
+			\repeatpgfmathloop%
+		}%
+  }
+
+	\foregroundpath{\pgf@lib@sh@logicgates@IEC@foregroundpath{mux}}
+
+	\anchorborder{%
+		\pgfextract@process\externalpoint{}%
+		\dimensions%
+		\pgfpointadd{\centerpoint}{\pgfpointborderrectangle{\externalpoint}{\pgfqpoint{\halfwidth}{\halfheight}}}%
+	}%	
+
+}
+
+
+\endinput
